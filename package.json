@@ -4,7 +4,7 @@
   "description": "fast campus class. shopping mall project",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon app.js",
+    "start": "nodemon -e js,html app.js",
     "dev": "nodemon app.js"
   },
   "keywords": [
@@ -13,6 +13,8 @@
   "author": "wonwoo jo",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.17.1"
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "nunjucks": "^3.2.0"
   }
 }
