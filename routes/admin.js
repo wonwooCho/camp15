@@ -7,9 +7,7 @@ router.get('/', function (req, res) {
 });
 
 router.get('/products' , function(_, res) {
-    models.Products.findAll({
-
-    }).then((data_from_db) => {
+    models.Products.findAll({}).then((data_from_db) => {
         res.render('admin/products.html', { products : data_from_db });
     });
 });
@@ -19,8 +17,8 @@ router.get('/products/write', function (req, res) {
 });
 
 router.get('/products/detail/:id' , function(req, res) {
-    models.Products.findByPk(req.params.id).then((product) => {
-        res.render('admin/detail.html', { product: product });  
+    models.Products.findByPk(req.params.id).then((data_from_db) => {
+        res.render('admin/detail.html', { product: data_from_db });  
     });
 });
 
@@ -30,6 +28,7 @@ router.post('/products/write' , (req, res) => {
         price : req.body.price ,
         description : req.body.description
     }).then(() => {
+        // 작성 완료 후 프로덕트 리스트 화면으로 보낸다.
         res.redirect('/admin/products');
     });
 });

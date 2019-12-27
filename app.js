@@ -10,6 +10,8 @@ const db = require('./models');
 db.sequelize.authenticate()
 .then(() => {
     console.log('Connection has been established successfully.');
+
+    // 접속과 동시에 테이블 자동생성 시도
     return db.sequelize.sync();
 })
 .then(() => {
