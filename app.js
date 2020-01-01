@@ -31,17 +31,18 @@ nunjucks.configure('template', {
     express: app
 });
 
-// 미들웨어 셋팅
+// 미들웨어
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
-app.get('/', function (req, res) {
+// 미들웨어 이후 라우팅
+app.get('/', (req, res) => {
     res.send('first app');
 });
 
 app.use('/admin', admin);
 
-app.listen(port, function () {
+app.listen(port, () => {
     console.log('Express listening on port', port);
 });
