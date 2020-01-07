@@ -4,7 +4,7 @@
   "description": "fast campus class. shopping mall project",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon -e js,html app.js"
+    "start": "npx nodemon -e js,html app.js"
   },
   "keywords": [
     "쇼핑몰"

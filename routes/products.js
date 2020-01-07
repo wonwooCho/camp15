@@ -42,9 +42,6 @@ router.post('/edit/:id', (req, res) => {
     });
 });
 
-// NOTE @wonwoo
-// controller에서 템플릿을 뿌려주는 구조이기 때문에, 모든 데이터를 json으로 처리한다.
-// 그래서 restfull 위해 router.delete 사용하지 않고 get요청으로 처리한다.
 router.get('/delete/:id', (req, res) => {
     models.Products.destroy({
         where : { 
