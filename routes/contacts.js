@@ -4,7 +4,7 @@ const models = require('../models');
 
 router.get('/', (_, res) => {
     models.Contacts.findAll({}).then((data_from_db) => {
-        res.render('admin/contacts/contacts.html', { contacts: data_from_db });
+        res.render('admin/contacts/contacts.html', { contacts : data_from_db });
     });
 });
 
@@ -14,15 +14,15 @@ router.get('/write', (_, res) => {
 
 router.get('/detail/:id', (req, res) => {
     models.Contacts.findByPk(req.params.id).then((data_from_db) => {
-        res.render('admin/contacts/detail.html', { contact: data_from_db });
+        res.render('admin/contacts/detail.html', { contact : data_from_db });
     })
 });
 
 router.post('/write', (req, res) => {
     models.Contacts.create({
-        name: req.body.name,
-        manufacturer: req.body.manufacturer,
-        description: req.body.description
+        name : req.body.name,
+        manufacturer : req.body.manufacturer,
+        description : req.body.description
     }).then(()=> {
         res.redirect('/admin/contacts');
     });
