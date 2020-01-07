@@ -2,54 +2,72 @@ const express = require('express');
 const router = express.Router();
 const models = require('../models');
 
-router.get('/' , (_, res) => {
-    models.Products.findAll({}).then((data_from_db) => {
+router.get('/' , async(_, res) => {
+    try {
+        const data_from_db = await models.Products.findAll();
         res.render('admin/products/products.html', { products : data_from_db });
-    });
+    } catch(e) {
+
+    }
 });
 
 router.get('/write', (_, res) => {
     res.render('admin/products/form.html');
 });
 
-router.get('/detail/:id' , (req, res) => {
-    models.Products.findByPk(req.params.id).then((data_from_db) => {
-        res.render('admin/products/detail.html', { product : data_from_db });  
-    });
+router.get('/detail/:id' , async(req, res) => {
+    try {
+        const data_from_db = await models.Products.findByPk(req.params.id);
+        res.render('admin/products/detail.html', { product : data_from_db });
+    } catch(e) {
+
+    }
 });
 
-router.post('/write' , (req, res) => {
+router.post('/write' , async(req, res) => {
     // key - body 간 필드명이 동일하면 req.body만 넣어줘도 자동으로 맵핑된다.
     // 즉 { name : req.body.name, ... } 생략 가능
-    models.Products.create(req.body).then(() => {
+    try {
+        await models.Products.create(req.body);
         res.redirect('/admin/products');
-    });
+    } catch(e) {
+        
+    }
 });
 
-router.get('/edit/:id', (req, res) => {
-    models.Products.findByPk(req.params.id).then((data_from_db) => {
+router.get('/edit/:id', async(req, res) => {
+    try {
+        const data_from_db = await models.Products.findByPk(req.params.id);
         res.render('admin/products/form.html', { product : data_from_db });
-    });
+    } catch(e) {
+
+    }
 });
 
-router.post('/edit/:id', (req, res) => {
-    models.Products.update(req.body, {
-        where : {
-            id : req.params.id
-        }
-    }).then(() => {
+router.post('/edit/:id', async(req, res) => {
+    try {
+        await models.Products.update(req.body, {
+            where : {
+                id : req.params.id
+            }
+        });
         res.redirect(`/admin/products/detail/${req.params.id}`);
-    });
+    } catch(e) {
+
+    }
 });
 
-router.get('/delete/:id', (req, res) => {
-    models.Products.destroy({
-        where : { 
-            id : req.params.id
-        }
-    }).then(() => {
+router.get('/delete/:id', async(req, res) => {
+    try {
+        await models.Products.destroy({
+            where : { 
+                id : req.params.id
+            }
+        });
         res.redirect('/admin/products');
-    });
+    } catch(e) {
+
+    }
 });
 
 module.exports = router;
