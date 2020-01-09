@@ -31,12 +31,25 @@ router.get('/detail/:id' , async(req, res) => {
     }
 });
 
-router.post ('/detail/:id', async(req, res) => {
+router.post('/detail/:id', async(req, res) => {
     try {
         const product = await models.Products.findByPk(req.params.id);
         // create + as에 적은 내용 ( Products.js association 에서 적은 내용 )
-        await product.createMemo(req.body)
+        await product.createMemo(req.body);
         res.redirect(`/admin/products/detail/${req.params.id}`); 
+    } catch(e) {
+        console.log(e);
+    }
+});
+
+router.get('/delete/:product_id/:memo_id', async(req, res) => {
+    try {
+        await models.ProductsMemo.destroy({
+            where : {
+                id : req.params.memo_id
+            }
+        });
+        res.redirect(`/admin/products/detail/${req.params.product_id}`);
     } catch(e) {
         console.log(e);
     }

@@ -20,6 +20,7 @@
                 {% for memo in product.Memo %}
                     <li>
                         {{ memo.content }} {{ memo.dateFormat(memo.createdAt) }}
+                        (<a href="/admin/products/delete/{{ product.id }}/{{ memo.id }}" onclick="return confirm('삭제하시겠습니까?')">삭제</a>)
                     </li>
                 {% endfor %}
             </ul>
