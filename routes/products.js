@@ -17,10 +17,28 @@ router.get('/write', (_, res) => {
 
 router.get('/detail/:id' , async(req, res) => {
     try {
-        const data_from_db = await models.Products.findByPk(req.params.id);
+        const data_from_db = await models.Products.findOne({
+            where : {
+                id : req.params.id
+            },
+            include : [
+                'Memo'
+            ]
+        });
         res.render('admin/products/detail.html', { product : data_from_db });
     } catch(e) {
 
+    }
+});
+
+router.post ('/detail/:id', async(req, res) => {
+    try {
+        const product = await models.Products.findByPk(req.params.id);
+        // create + as에 적은 내용 ( Products.js association 에서 적은 내용 )
+        await product.createMemo(req.body)
+        res.redirect(`/admin/products/detail/${req.params.id}`); 
+    } catch(e) {
+        console.log(e);
     }
 });
 
