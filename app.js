@@ -2,6 +2,7 @@ const express = require('express');
 const nunjucks = require('nunjucks');
 const logger = require('morgan');
 const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
 
 // db 관련
 const db = require('./models');
@@ -35,6 +36,7 @@ nunjucks.configure('template', {
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(cookieParser());
 
 // 미들웨어 이후 라우팅
 app.get('/', (req, res) => {

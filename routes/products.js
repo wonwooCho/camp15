@@ -2,6 +2,9 @@ const express = require('express');
 const router = express.Router();
 const models = require('../models');
 
+const csrf = require('csurf');
+const csrfProtection = csrf({ cookie : true });
+
 router.get('/' , async(_, res) => {
     try {
         const data_from_db = await models.Products.findAll();
@@ -11,8 +14,19 @@ router.get('/' , async(_, res) => {
     }
 });
 
-router.get('/write', (_, res) => {
-    res.render('admin/products/form.html');
+router.get('/write', csrfProtection, (req, res) => {
+    res.render('admin/products/form.html', { csrfToken : req.csrfToken() });
+});
+
+router.post('/write', csrfProtection, async(req, res) => {
+    // key - body 간 필드명이 동일하면 req.body만 넣어줘도 자동으로 맵핑된다.
+    // 즉 { name : req.body.name, ... } 생략 가능
+    try {
+        await models.Products.create(req.body);
+        res.redirect('/admin/products');
+    } catch(e) {
+        
+    }
 });
 
 router.get('/detail/:id' , async(req, res) => {
@@ -55,27 +69,19 @@ router.get('/delete/:product_id/:memo_id', async(req, res) => {
     }
 });
 
-router.post('/write' , async(req, res) => {
-    // key - body 간 필드명이 동일하면 req.body만 넣어줘도 자동으로 맵핑된다.
-    // 즉 { name : req.body.name, ... } 생략 가능
-    try {
-        await models.Products.create(req.body);
-        res.redirect('/admin/products');
-    } catch(e) {
-        
-    }
-});
-
-router.get('/edit/:id', async(req, res) => {
+router.get('/edit/:id', csrfProtection, async(req, res) => {
     try {
         const data_from_db = await models.Products.findByPk(req.params.id);
-        res.render('admin/products/form.html', { product : data_from_db });
+        res.render('admin/products/form.html', {
+            product : data_from_db,
+            csrfToken : req.csrfToken()
+         });
     } catch(e) {
 
     }
 });
 
-router.post('/edit/:id', async(req, res) => {
+router.post('/edit/:id', csrfProtection, async(req, res) => {
     try {
         await models.Products.update(req.body, {
             where : {
