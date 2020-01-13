@@ -1,0 +1,15 @@
+{% set title = "메모 수정" %}
+{% extends "layout/base.html" %}
+ 
+{% block content -%}
+    <form action="" method="post">
+        <table class="table table-bordered">
+            <tr>
+                <th>메모</th>
+                <td><input type="text" name="content" class="form-control" value="{{ memo.content }}"/></td>
+            </tr>
+        </table>
+        <button class="btn btn-primary">수정</button>
+    </form>
+
+{% endblock %}

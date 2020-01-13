@@ -84,6 +84,30 @@ router.post('/edit/:id', async(req, res) => {
     }
 });
 
+router.get('/edit/:contact_id/:memo_id', async(req, res) => {
+    try {
+        const data_from_db = await models.ContactsMemo.findByPk(req.params.memo_id);
+        res.render('admin/contacts/form_memo.html', {
+            memo : data_from_db
+        });
+    } catch(e) {
+
+    }
+});
+
+router.post('/edit/:contact_id/:memo_id', async(req, res) => {
+    try {
+        await models.ContactsMemo.update(req.body, {
+            where : {
+                id : req.params.memo_id
+            }
+        });
+        res.redirect(`/admin/contacts/detail/${req.params.contact_id}`);
+    } catch(e) {
+
+    }
+});
+
 ///////////////////////////////////////////////////////////////
 // delete
 ///////////////////////////////////////////////////////////////
