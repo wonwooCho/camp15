@@ -2,6 +2,9 @@ const express = require('express');
 const router = express.Router();
 const models = require('../models');
 
+const csrf = require('csurf');
+const csrfProtection = csrf({ cookie : true });
+
 ///////////////////////////////////////////////////////////////
 // contacts main
 ///////////////////////////////////////////////////////////////
@@ -14,11 +17,11 @@ router.get('/', (_, res) => {
 ///////////////////////////////////////////////////////////////
 // write
 ///////////////////////////////////////////////////////////////
-router.get('/write', (_, res) => {
-    res.render('admin/contacts/form.html');
+router.get('/write', csrfProtection, (req, res) => {
+    res.render('admin/contacts/form.html', { csrfToken : req.csrfToken() });
 });
 
-router.post('/write', (req, res) => {
+router.post('/write', csrfProtection, (req, res) => {
     models.Contacts.create({
         name : req.body.name,
         manufacturer : req.body.manufacturer,
@@ -60,18 +63,19 @@ router.post('/detail/:id', async(req, res) => {
 ///////////////////////////////////////////////////////////////
 // edit
 ///////////////////////////////////////////////////////////////
-router.get('/edit/:id', async(req, res) => {
+router.get('/edit/:id', csrfProtection, async(req, res) => {
     try {
         const data_from_db = await models.Contacts.findByPk(req.params.id);
         res.render('admin/contacts/form.html', {
-            contact : data_from_db
+            contact : data_from_db,
+            csrfToken : req.csrfToken()
         });
     } catch(e) {
 
     }
 });
 
-router.post('/edit/:id', async(req, res) => {
+router.post('/edit/:id', csrfProtection, async(req, res) => {
     try {
         await models.Contacts.update(req.body, {
             where : {
