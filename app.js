@@ -28,8 +28,8 @@ const app = express();
 const port = 3000;
 
 nunjucks.configure('template', {
-    autoescape: true,
-    express: app
+    autoescape : true,
+    express : app
 });
 
 // 미들웨어
@@ -37,6 +37,9 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
+
+// 업로드 정적 path 추가
+app.use('/uploads', express.static('uploads'));
 
 // 미들웨어 이후 라우팅
 app.get('/', (req, res) => {

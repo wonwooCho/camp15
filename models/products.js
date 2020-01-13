@@ -1,11 +1,11 @@
 const moment = require('moment');
 
-module.exports = (sequelize, data_types) => {
+module.exports = (sequelize, dataTypes) => {
     var Products = sequelize.define('Products', {
-        id : { type : data_types.INTEGER, primaryKey : true, autoIncrement : true },
-        name : { type : data_types.STRING },
-        price : { type : data_types.INTEGER },
-        description : { type : data_types.TEXT }
+        id : { type : dataTypes.INTEGER, primaryKey : true, autoIncrement : true },
+        name : { type : dataTypes.STRING },
+        price : { type : dataTypes.INTEGER },
+        description : { type : dataTypes.TEXT }
     });
 
     // Products 모델 관계도

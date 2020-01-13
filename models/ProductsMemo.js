@@ -1,18 +1,21 @@
 const moment = require('moment');
 
-module.exports = (sequelize, DataTypes) => {
+module.exports = (sequelize, dataTypes) => {
     const ProductsMemo = sequelize.define('ProductsMemo', {
-            id : { type : DataTypes.BIGINT.UNSIGNED, primaryKey : true, autoIncrement : true },
+            id : { 
+                type : dataTypes.BIGINT.UNSIGNED,
+                primaryKey : true,
+                autoIncrement : true
+            },
             content :  { 
-                type : DataTypes.TEXT,
+                type : dataTypes.TEXT,
                 validate : {
-                    len : [0, 500],
+                    len : [0, 500]
                 }
             }
         }, {
             tableName : 'ProductsMemo'
-        }
-    );
+        });
 
     ProductsMemo.prototype.dateFormat = (date) => (
         moment(date).format('YYYY-MM-DD // hh:mm')
