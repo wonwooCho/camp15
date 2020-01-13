@@ -61,7 +61,7 @@ router.post('/detail/:id', async(req, res) => {
         await product.createMemo(req.body);
         res.redirect(`/admin/products/detail/${req.params.id}`); 
     } catch(e) {
-        
+
     }
 });
 
