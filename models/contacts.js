@@ -1,11 +1,11 @@
 const moment = require('moment');
 
-module.exports = (sequelize, data_types) => {
+module.exports = (sequelize, dataTypes) => {
     var Contacts = sequelize.define('Contacts', {
-        id : { type : data_types.INTEGER, primaryKey : true, autoIncrement : true },
-        name : { type : data_types.STRING },
-        manufacturer : { type : data_types.STRING },
-        description : { type : data_types.TEXT }
+        id : { type : dataTypes.INTEGER, primaryKey : true, autoIncrement : true },
+        name : { type : dataTypes.STRING },
+        manufacturer : { type : dataTypes.STRING },
+        description : { type : dataTypes.TEXT }
     });
 
     Contacts.prototype.dateFormat = (date) => (

@@ -23,7 +23,7 @@
                 {{ contact.dateFormat(contact.createdAt) }}
             </td>
             <td>
-                <a href="#" class="btn btn-danger">삭제</a>
+                <a href="/admin/contacts/delete/{{ contact.id }}" class="btn btn-danger">삭제</a>
             </td>
         </tr>
         {% endfor %}

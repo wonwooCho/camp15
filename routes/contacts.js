@@ -28,4 +28,41 @@ router.post('/write', (req, res) => {
     });
 });
 
+router.get('/edit/:id', async(req, res) => {
+    try {
+        const data_from_db = await models.Contacts.findByPk(req.params.id);
+        res.render('admin/contacts/form.html', {
+            contact : data_from_db
+        });
+    } catch(e) {
+        console.log(e);
+    }
+});
+
+router.post('/edit/:id', async(req, res) => {
+    try {
+        await models.Contacts.update(req.body, {
+            where : {
+                id : req.params.id
+            }
+        });
+        res.redirect(`/admin/contacts/detail/${req.params.id}`);
+    } catch(e) {
+        console.log(e);
+    }
+});
+
+router.get('/delete/:id', async(req, res) => {
+    try {
+        await models.Contacts.destroy({
+            where : {
+                id : req.params.id
+            }
+        });
+        res.redirect('/admin/contacts');
+    } catch(e) {
+
+    }
+});
+
 module.exports = router;
