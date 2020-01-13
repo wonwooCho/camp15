@@ -5,6 +5,9 @@ const models = require('../models');
 const csrf = require('csurf');
 const csrfProtection = csrf({ cookie : true });
 
+///////////////////////////////////////////////////////////////
+// products main
+///////////////////////////////////////////////////////////////
 router.get('/' , async(_, res) => {
     try {
         const data_from_db = await models.Products.findAll();
@@ -14,6 +17,9 @@ router.get('/' , async(_, res) => {
     }
 });
 
+///////////////////////////////////////////////////////////////
+// write
+///////////////////////////////////////////////////////////////
 router.get('/write', csrfProtection, (req, res) => {
     res.render('admin/products/form.html', { csrfToken : req.csrfToken() });
 });
@@ -29,6 +35,9 @@ router.post('/write', csrfProtection, async(req, res) => {
     }
 });
 
+///////////////////////////////////////////////////////////////
+// detail
+///////////////////////////////////////////////////////////////
 router.get('/detail/:id' , async(req, res) => {
     try {
         const data_from_db = await models.Products.findOne({
@@ -52,23 +61,13 @@ router.post('/detail/:id', async(req, res) => {
         await product.createMemo(req.body);
         res.redirect(`/admin/products/detail/${req.params.id}`); 
     } catch(e) {
-        console.log(e);
+        
     }
 });
 
-router.get('/delete/:product_id/:memo_id', async(req, res) => {
-    try {
-        await models.ProductsMemo.destroy({
-            where : {
-                id : req.params.memo_id
-            }
-        });
-        res.redirect(`/admin/products/detail/${req.params.product_id}`);
-    } catch(e) {
-        console.log(e);
-    }
-});
-
+///////////////////////////////////////////////////////////////
+// edit
+///////////////////////////////////////////////////////////////
 router.get('/edit/:id', csrfProtection, async(req, res) => {
     try {
         const data_from_db = await models.Products.findByPk(req.params.id);
@@ -94,6 +93,9 @@ router.post('/edit/:id', csrfProtection, async(req, res) => {
     }
 });
 
+///////////////////////////////////////////////////////////////
+// delete
+///////////////////////////////////////////////////////////////
 router.get('/delete/:id', async(req, res) => {
     try {
         await models.Products.destroy({
@@ -106,5 +108,19 @@ router.get('/delete/:id', async(req, res) => {
 
     }
 });
+
+router.get('/delete/:product_id/:memo_id', async(req, res) => {
+    try {
+        await models.ProductsMemo.destroy({
+            where : {
+                id : req.params.memo_id
+            }
+        });
+        res.redirect(`/admin/products/detail/${req.params.product_id}`);
+    } catch(e) {
+
+    }
+});
+
 
 module.exports = router;

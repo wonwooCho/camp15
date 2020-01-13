@@ -17,5 +17,9 @@ module.exports = (sequelize, dataType) => {
             tableName : 'ContactsMemo'
         });
 
+    ContactsMemo.prototype.dateFormat = (date) => (
+        moment(date).format('YYYY-MM-DD // hh:mm')
+    );
+
     return ContactsMemo;
 }

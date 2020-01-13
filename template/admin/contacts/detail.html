@@ -14,6 +14,23 @@
 
             {{ contact.description }}
 
+            <hr>
+
+            <ul>
+                {% for memo in contact.Memo %}
+                    <li>
+                        {{ memo.content }} {{ memo.dateFormat(memo.createdAt) }}
+                        (<a href="/admin/contacts/delete/{{ contact.id }}/{{ memo.id }}" onclick="return confirm('삭제하시겠습니까?')">삭제</a>)
+                    </li>
+                {% endfor %}
+            </ul>
+
+            메모작성하기
+            <form action="" method="post">
+                <textarea class="form-control" name="content" required></textarea>
+                <button class="btn btn-primary" style="margin-top: 10px">메모작성</button>
+            </form>
+
         </div>
     </div>
 

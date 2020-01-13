@@ -2,20 +2,20 @@ const express = require('express');
 const router = express.Router();
 const models = require('../models');
 
+///////////////////////////////////////////////////////////////
+// contacts main
+///////////////////////////////////////////////////////////////
 router.get('/', (_, res) => {
     models.Contacts.findAll({}).then((data_from_db) => {
         res.render('admin/contacts/contacts.html', { contacts : data_from_db });
     });
 });
 
+///////////////////////////////////////////////////////////////
+// write
+///////////////////////////////////////////////////////////////
 router.get('/write', (_, res) => {
     res.render('admin/contacts/form.html');
-});
-
-router.get('/detail/:id', (req, res) => {
-    models.Contacts.findByPk(req.params.id).then((data_from_db) => {
-        res.render('admin/contacts/detail.html', { contact : data_from_db });
-    })
 });
 
 router.post('/write', (req, res) => {
@@ -28,6 +28,38 @@ router.post('/write', (req, res) => {
     });
 });
 
+///////////////////////////////////////////////////////////////
+// detail
+///////////////////////////////////////////////////////////////
+router.get('/detail/:id', async(req, res) => {
+    try {
+        const data_from_db = await models.Contacts.findOne({
+            where : {
+                id : req.params.id
+            },
+            include : [
+                'Memo'
+            ]
+        });
+        res.render('admin/contacts/detail.html', { contact : data_from_db });
+    } catch(e) {
+
+    }
+});
+
+router.post('/detail/:id', async(req, res) => {
+    try {
+        const contact = await models.Contacts.findByPk(req.params.id);
+        await contact.createMemo(req.body);
+        res.redirect(`/admin/contacts/detail/${req.params.id}`);
+    } catch(e) {
+
+    }
+});
+
+///////////////////////////////////////////////////////////////
+// edit
+///////////////////////////////////////////////////////////////
 router.get('/edit/:id', async(req, res) => {
     try {
         const data_from_db = await models.Contacts.findByPk(req.params.id);
@@ -35,7 +67,7 @@ router.get('/edit/:id', async(req, res) => {
             contact : data_from_db
         });
     } catch(e) {
-        console.log(e);
+
     }
 });
 
@@ -48,10 +80,13 @@ router.post('/edit/:id', async(req, res) => {
         });
         res.redirect(`/admin/contacts/detail/${req.params.id}`);
     } catch(e) {
-        console.log(e);
+
     }
 });
 
+///////////////////////////////////////////////////////////////
+// delete
+///////////////////////////////////////////////////////////////
 router.get('/delete/:id', async(req, res) => {
     try {
         await models.Contacts.destroy({
@@ -60,6 +95,19 @@ router.get('/delete/:id', async(req, res) => {
             }
         });
         res.redirect('/admin/contacts');
+    } catch(e) {
+
+    }
+});
+
+router.get('/delete/:contact_id/:memo_id', async(req, res) => {
+    try {
+        await models.ContactsMemo.destroy({
+            where : {
+                id : req.params.memo_id
+            }
+        });
+        res.redirect(`/admin/contacts/detail/${req.params.contact_id}`);
     } catch(e) {
 
     }
