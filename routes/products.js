@@ -105,13 +105,24 @@ router.get('/edit/:id', csrfProtection, async(req, res) => {
     }
 });
 
-router.post('/edit/:id', csrfProtection, async(req, res) => {
+router.post('/edit/:id', upload.single('thumbnail'), csrfProtection, async(req, res) => {
     try {
+        const product = await models.Products.findByPk(req.body.id);
+
+        // 파일이 존재하면 이전이미지 지운다.
+        if (req.file && product.thumbnail) {
+            fs.unlinkSync(`${uploadDir}/${product.thumbnail}`);
+        }
+
+        // 수정요청이 파일명을 들고있으면 덮어씌우고, 안들고있으면 DB에서 가져옴
+        // req.body.thumbnail = req.file ? req.file.filename : product.thumbnail;
+
         await models.Products.update(req.body, {
             where : {
                 id : req.params.id
             }
         });
+
         res.redirect(`/admin/products/detail/${req.params.id}`);
     } catch(e) {
 
