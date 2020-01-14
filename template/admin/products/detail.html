@@ -12,6 +12,12 @@
                 가격: {{ product.price }}
             </div>
 
+            {% if product.thumbnail %}
+                <p>
+                    <img src="/uploads/{{ product.thumbnail }}" style="max-width: 100%"/>
+                </p>
+            {% endif %}
+
             {{ product.description }}
 
             <hr>

@@ -4,6 +4,7 @@ module.exports = (sequelize, dataTypes) => {
     var Products = sequelize.define('Products', {
         id : { type : dataTypes.INTEGER, primaryKey : true, autoIncrement : true },
         name : { type : dataTypes.STRING },
+        thumbnail : { type : dataTypes.STRING },
         price : { type : dataTypes.INTEGER },
         description : { type : dataTypes.TEXT }
     });

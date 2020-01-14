@@ -6,6 +6,27 @@ const csrf = require('csurf');
 const csrfProtection = csrf({ cookie : true });
 
 ///////////////////////////////////////////////////////////////
+// multer
+///////////////////////////////////////////////////////////////
+
+//이미지 저장되는 위치 설정
+const path = require('path');
+const uploadDir = path.join(__dirname, '../uploads');   // root/uploads에 저장
+const fs = require('fs');
+
+//multer 셋팅
+const multer  = require('multer');
+const storage = multer.diskStorage({
+    destination : (req, file, callback) => {    //이미지가 저장되는 도착지 지정
+        callback(null, uploadDir );
+    },
+    filename : (req, file, callback) => {       // products-날짜.jpg(png) 저장 
+        callback(null, `products-${Date.now()}.${file.mimetype.split('/')[1]}`);
+    }
+});
+const upload = multer({ storage : storage });
+
+///////////////////////////////////////////////////////////////
 // products main
 ///////////////////////////////////////////////////////////////
 router.get('/' , async(_, res) => {
@@ -24,10 +45,14 @@ router.get('/write', csrfProtection, (req, res) => {
     res.render('admin/products/form.html', { csrfToken : req.csrfToken() });
 });
 
-router.post('/write', csrfProtection, async(req, res) => {
+router.post('/write', upload.single('thumbnail'), csrfProtection, async(req, res) => {  // thumbnail은 input필드의 name
+    console.log(req.body);
+    console.log(req.file);
+
     // key - body 간 필드명이 동일하면 req.body만 넣어줘도 자동으로 맵핑된다.
     // 즉 { name : req.body.name, ... } 생략 가능
     try {
+        req.body.thumbnail = req.file ? req.file.filename : "";
         await models.Products.create(req.body);
         res.redirect('/admin/products');
     } catch(e) {

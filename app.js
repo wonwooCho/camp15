@@ -14,6 +14,7 @@ db.sequelize.authenticate()
 
     // 접속과 동시에 테이블 자동생성 시도
     return db.sequelize.sync();
+    // return db.sequelize.drop();
 })
 .then(() => {
     console.log('DB Sync complete.');
