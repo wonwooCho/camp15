@@ -113,15 +113,18 @@ router.post('/edit/:id', upload.single('thumbnail'), csrfProtection, async(req, 
         if (req.file && product.thumbnail) {
             fs.unlinkSync(`${uploadDir}/${product.thumbnail}`);
         }
+        console.log('0');
 
         // 수정요청이 파일명을 들고있으면 덮어씌우고, 안들고있으면 DB에서 가져옴
-        // req.body.thumbnail = req.file ? req.file.filename : product.thumbnail;
+        req.body.thumbnail = req.file ? req.file.filename : product.thumbnail;
+        console.log('1');
 
         await models.Products.update(req.body, {
             where : {
                 id : req.params.id
             }
         });
+        console.log('2');
 
         res.redirect(`/admin/products/detail/${req.params.id}`);
     } catch(e) {

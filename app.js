@@ -32,6 +32,7 @@ db.sequelize.authenticate()
 
 const admin = require('./routes/admin');
 const accounts = require('./routes/accounts');
+const auth = require('./routes/auth');
 
 const app = express();
 const port = 3000;
@@ -74,6 +75,7 @@ app.get('/', (req, res) => {
 
 app.use('/admin', admin);
 app.use('/accounts', accounts);
+app.use('/auth', auth);
 
 app.listen(port, () => {
     console.log('Express listening on port', port);

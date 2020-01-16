@@ -31,6 +31,7 @@ async (req , username , password, done) => {
             username,
             password : passwordHash(password),
         },
+        // 이 옵션이 있으면 json으로 데이터 뿌릴때 패스워드는 제외한다
         // attributes: { exclude: ['password'] }
     });
 
