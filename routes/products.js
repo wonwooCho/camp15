@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const models = require('../models');
+const loginRequired = require('../helpers/loginRequired');
 
 const csrf = require('csurf');
 const csrfProtection = csrf({ cookie : true });
@@ -41,20 +42,24 @@ router.get('/' , async(_, res) => {
 ///////////////////////////////////////////////////////////////
 // write
 ///////////////////////////////////////////////////////////////
-router.get('/write', csrfProtection, (req, res) => {
+router.get('/write', loginRequired, csrfProtection, (req, res) => {
     res.render('admin/products/form.html', { csrfToken : req.csrfToken() });
 });
 
-router.post('/write', upload.single('thumbnail'), csrfProtection, async(req, res) => {  // thumbnail은 input필드의 name
-    console.log(req.body);
-    console.log(req.file);
+router.post('/write', loginRequired, upload.single('thumbnail'), csrfProtection, async(req, res) => {  // thumbnail은 input필드의 name
 
     // key - body 간 필드명이 동일하면 req.body만 넣어줘도 자동으로 맵핑된다.
     // 즉 { name : req.body.name, ... } 생략 가능
     try {
         req.body.thumbnail = req.file ? req.file.filename : "";
-        await models.Products.create(req.body);
+        // 유저를 가져온다음에 저장
+        const user = await models.User.findByPk(req.user.id);
+        await user.createProduct(req.body)
         res.redirect('/admin/products');
+        
+        // const product = await models.Products.findByPk(req.body.id);
+        // console.log('product: ');
+        // console.log(product);
     } catch(e) {
         console.log(`products/write error -> ${e}`);
     }
@@ -93,7 +98,7 @@ router.post('/detail/:id', async(req, res) => {
 ///////////////////////////////////////////////////////////////
 // edit
 ///////////////////////////////////////////////////////////////
-router.get('/edit/:id', csrfProtection, async(req, res) => {
+router.get('/edit/:id', loginRequired, csrfProtection, async(req, res) => {
     try {
         const data_from_db = await models.Products.findByPk(req.params.id);
         res.render('admin/products/form.html', {
@@ -105,12 +110,9 @@ router.get('/edit/:id', csrfProtection, async(req, res) => {
     }
 });
 
-router.post('/edit/:id', upload.single('thumbnail'), csrfProtection, async(req, res) => {
+router.post('/edit/:id', loginRequired, upload.single('thumbnail'), csrfProtection, async(req, res) => {
     try {
-        console.log(req.body);
-        console.log(req.file);
-
-        const product = await models.Products.findByPk(req.body.id);
+        const product = await models.Products.findByPk(req.params.id);
 
         // 파일이 존재하면 이전이미지 지운다.
         if (req.file && product.thumbnail) {
@@ -137,6 +139,12 @@ router.post('/edit/:id', upload.single('thumbnail'), csrfProtection, async(req, 
 ///////////////////////////////////////////////////////////////
 router.get('/delete/:id', async(req, res) => {
     try {
+        
+        // 파일 제거
+        var product = await models.Products.findByPk(req.params.id);
+        if (product.thumbnail)
+            fs.unlinkSync(`${uploadDir}/${product.thumbnail}`);
+
         await models.Products.destroy({
             where : { 
                 id : req.params.id
