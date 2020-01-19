@@ -20,6 +20,12 @@ module.exports = (sequelize, dataTypes) => {
             sourceKey : 'id',
             onDelete : 'CASCADE'
         });
+
+        Products.belongsTo(models.User, {
+            as : 'Owner',
+            foreignKey : 'user_id',
+            targetKey : 'id'
+        });
     }
 
     Products.prototype.dateFormat = (date) => (

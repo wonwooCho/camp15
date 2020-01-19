@@ -33,6 +33,7 @@ db.sequelize.authenticate()
 const admin = require('./routes/admin');
 const accounts = require('./routes/accounts');
 const auth = require('./routes/auth');
+const home = require('./routes/home');
 
 const app = express();
 const port = 3000;
@@ -77,14 +78,10 @@ app.use((req, res, next) => {
     next();
 });
 
-// 미들웨어 이후 라우팅
-app.get('/', (req, res) => {
-    res.send('first app');
-});
-
 app.use('/admin', admin);
 app.use('/accounts', accounts);
 app.use('/auth', auth);
+app.use('/', home);
 
 app.listen(port, () => {
     console.log('Express listening on port', port);
