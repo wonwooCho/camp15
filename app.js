@@ -53,15 +53,21 @@ app.use(cookieParser());
 // 업로드 정적 path 추가
 app.use('/uploads', express.static('uploads'));
 
-// session 관련 셋팅
-app.use(session({
-    secret: 'camp15',
-    resave: false,
-    saveUninitialized: true,
-    cookie: {
-      maxAge: 2000 * 60 * 60 //지속시간 2시간
-    }
-}));
+const SequelizeStore = require('connect-session-sequelize')(session.Store);
+
+//session 관련 셋팅
+const sessionMiddleWare = session({
+    secret : 'fastcampus',
+    resave : false,
+    saveUninitialized : true,
+    cookie : {
+      maxAge : 2000 * 60 * 60 // 지속시간 2시간
+    },
+    store: new SequelizeStore({
+        db : db.sequelize
+    }),
+});
+app.use(sessionMiddleWare);
 
 // passport 적용
 app.use(passport.initialize());
@@ -92,18 +98,9 @@ const server = app.listen(port, () => {
 
 const listen = require('socket.io');
 const io = listen(server);
-// io.on('connection', socket => {
-//     // console.log('채팅을 위한 소켓서버 접속완료');
-//     socket.on('client message', data => {
-//         // console.log(data);
-//         io.emit('server message', data.message);
-//     });
 
-//     // 예약어는 connection, disconnect정도. 나머지는 비교적 자유롭게 네이밍 가능
-//     socket.on('disconnect', data => {
-//         console.log('DISCONNECT ', data);
-        
-//     });
-// });
+io.use((socket, next) => {
+    sessionMiddleWare(socket.request, socket.request.res, next);
+});
 
 require('./helpers/socketConnection')(io);  // 별도 모듈 변수선언 없이 불러옴과 동시에 io 파라미터 전달
