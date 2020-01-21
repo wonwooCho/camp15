@@ -34,6 +34,7 @@ const admin = require('./routes/admin');
 const accounts = require('./routes/accounts');
 const auth = require('./routes/auth');
 const home = require('./routes/home');
+const chat = require('./routes/chat');
 
 const app = express();
 const port = 3000;
@@ -82,8 +83,27 @@ app.use((req, res, next) => {
 app.use('/admin', admin);
 app.use('/accounts', accounts);
 app.use('/auth', auth);
+app.use('/chat', chat);
 app.use('/', home);
 
-app.listen(port, () => {
+const server = app.listen(port, () => {
     console.log('Express listening on port', port);
 });
+
+const listen = require('socket.io');
+const io = listen(server);
+// io.on('connection', socket => {
+//     // console.log('채팅을 위한 소켓서버 접속완료');
+//     socket.on('client message', data => {
+//         // console.log(data);
+//         io.emit('server message', data.message);
+//     });
+
+//     // 예약어는 connection, disconnect정도. 나머지는 비교적 자유롭게 네이밍 가능
+//     socket.on('disconnect', data => {
+//         console.log('DISCONNECT ', data);
+        
+//     });
+// });
+
+require('./helpers/socketConnection')(io);  // 별도 모듈 변수선언 없이 불러옴과 동시에 io 파라미터 전달

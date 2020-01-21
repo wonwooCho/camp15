@@ -72,9 +72,11 @@ router.post('/write', loginRequired, upload.single('thumbnail'), csrfProtection,
     // 즉 { name : req.body.name, ... } 생략 가능
     try {
         req.body.thumbnail = req.file ? req.file.filename : "";
+
         // 유저를 가져온다음에 저장
         const user = await models.User.findByPk(req.user.id);
-        await user.createProduct(req.body)
+        await user.createProduct(req.body);
+        
         res.redirect('/admin/products');
         
     } catch(e) {
