@@ -21,8 +21,10 @@ module.exports = (sequelize, dataTypes) => {
             onDelete : 'CASCADE'
         });
 
+        // User에서 Products를 hasMany로 associate걸었고, Products가 하위 테이블 느낌.
+        // Products모델에서 User에 접근하기 위해 필요한 config
         Products.belongsTo(models.User, {
-            as : 'Owner',
+            as : 'Owner',   // => home.js -> as 'Owner'
             foreignKey : 'user_id',
             targetKey : 'id'
         });

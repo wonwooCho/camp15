@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const models = require('../models');
 const loginRequired = require('../helpers/loginRequired');
+const paginate = require('express-paginate');
 
 const csrf = require('csurf');
 const csrfProtection = csrf({ cookie : true });
@@ -16,7 +17,7 @@ const uploadDir = path.join(__dirname, '../uploads');   // root/uploads에 저�
 const fs = require('fs');
 
 //multer 셋팅
-const multer  = require('multer');
+const multer = require('multer');
 const storage = multer.diskStorage({
     destination : (req, file, callback) => {    //이미지가 저장되는 도착지 지정
         callback(null, uploadDir );
@@ -30,12 +31,31 @@ const upload = multer({ storage : storage });
 ///////////////////////////////////////////////////////////////
 // products main
 ///////////////////////////////////////////////////////////////
-router.get('/' , async(_, res) => {
+router.get('/' , paginate.middleware(5, 50), async(req, res) => {
     try {
-        const data_from_db = await models.Products.findAll();
-        res.render('admin/products/products.html', { products : data_from_db });
-    } catch(e) {
+        const [products, totalCount] = await Promise.all([
+            models.Products.findAll({
+                include : [
+                    {
+                        model : models.User,
+                        as : 'Owner',
+                        attributes : ['username', 'displayname']
+                    },
+                ],
+                limit : req.query.limit,
+                offset : req.offset
+            }),
 
+            models.Products.count()
+        ]);
+
+        // const pageCount = Math.ceil(totalCount / req.query.limit);
+        const pageCount = (totalCount / req.query.limit) + (totalCount % req.query.limit);
+        const pages = paginate.getArrayPages(req)(5, pageCount, req.query.page);
+
+        res.render('admin/products/products.html', { products, pages, pageCount });
+    } catch(e) {
+        console.log('admin/products - ' + e);
     }
 });
 
@@ -57,9 +77,6 @@ router.post('/write', loginRequired, upload.single('thumbnail'), csrfProtection,
         await user.createProduct(req.body)
         res.redirect('/admin/products');
         
-        // const product = await models.Products.findByPk(req.body.id);
-        // console.log('product: ');
-        // console.log(product);
     } catch(e) {
         console.log(`products/write error -> ${e}`);
     }

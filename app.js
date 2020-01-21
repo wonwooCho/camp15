@@ -71,6 +71,7 @@ app.use(flash());
 
 //.......flash 아래에다 붙여 넣는다.
 //로그인 정보 뷰에서만 변수로 셋팅, 전체 미들웨어는 router위에 두어야 에러가 안난다
+// 템플릿에서만 사용할 글로벌변수 -> app.locals
 app.use((req, res, next) => {
     app.locals.isLogin = req.isAuthenticated();
     // app.locals.URL_PARAMETER = req.url; // 현재 url 정보를 보내고 싶으면 이와같이 셋팅

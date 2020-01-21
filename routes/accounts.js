@@ -22,7 +22,7 @@ passport.use(new LocalStrategy({
     usernameField: 'username',
     passwordField : 'password',
     passReqToCallback : true
-}, 
+},
 async (req , username , password, done) => {
 
     // 조회

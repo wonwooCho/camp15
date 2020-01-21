@@ -7,7 +7,7 @@ router.get('/', async (req, res) => {
     const products = await models.Products.findAll({
         include : [{
                 model : models.User ,
-                as : 'Owner',
+                as : 'Owner',   // => Products.js belongsTo
                 attributes : [ 'username' , 'displayname' ]
             }]
     });

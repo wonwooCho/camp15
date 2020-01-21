@@ -5,5 +5,8 @@
 # module dependancies
 node_modules/
 
+# static images directory
+uploads/
+
 # environment
 *.env
