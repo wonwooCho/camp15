@@ -51,12 +51,27 @@
     <script>
     var socket = io();
 
+    function updateUserList(userList) {
+        $('#userList').html("");
+        for(var key in userList){
+            $('#userList').append(`<li>${userList[key]}</li>`);
+        }
+    }
+
+    socket.on('join', data => {
+        updateUserList(data);
+    });
+
+    socket.on('leave', data => {
+        updateUserList(data);
+    });
+
     socket.on('server message', data => {
         $('#chatBody').append(`<li><strong>${data.displayname}</strong> ${data.message}</li>`);
     });
 
     $(document).ready(() => {
-        $('#sendForm').submit(function(){
+        $('#sendForm').submit(() => {
             var msg = $('#sendForm input[name=message]');
             socket.emit('client message', { message : msg.val()});
             msg.val('');
