@@ -20,15 +20,15 @@ passport.deserializeUser((user, done) => {
 
 passport.use(new LocalStrategy({
     usernameField: 'username',
-    passwordField : 'password',
-    passReqToCallback : true
+    passwordField: 'password',
+    passReqToCallback: true
 }, async(req, username, password, done) => {
 
     // 조회
     const user = await models.User.findOne({
         where: {
             username,
-            password : passwordHash(password),
+            password: passwordHash(password),
         },
         // 이 옵션이 있으면 json으로 데이터 뿌릴때 패스워드는 제외한다
         // attributes: { exclude: ['password'] }
@@ -36,7 +36,7 @@ passport.use(new LocalStrategy({
 
     // 유저에서 조회되지 않을시
     if (!user) {
-        return done(null, false, { message : '일치하는 아이디 패스워드가 존재하지 않습니다.' });
+        return done(null, false, { message: '일치하는 아이디 패스워드가 존재하지 않습니다.' });
 
     // 유저에서 조회 되면 세션등록쪽으로 데이터를 넘김
     } else {
@@ -62,7 +62,7 @@ router.post('/join', async(req, res) => {
 });
 
 router.get('/login', (req, res) => {
-    res.render('accounts/login.html', { flashMessage : req.flash().error });
+    res.render('accounts/login.html', { flashMessage: req.flash().error });
 });
 
 router.post('/login', 

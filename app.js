@@ -40,8 +40,8 @@ const app = express();
 const port = 3000;
 
 nunjucks.configure('template', {
-    autoescape : true,
-    express : app
+    autoescape: true,
+    express: app
 });
 
 // 미들웨어
@@ -57,14 +57,14 @@ const SequelizeStore = require('connect-session-sequelize')(session.Store);
 
 //session 관련 셋팅
 const sessionMiddleWare = session({
-    secret : 'fastcampus',
-    resave : false,
-    saveUninitialized : true,
-    cookie : {
-      maxAge : 2000 * 60 * 60 // 지속시간 2시간
+    secret: 'fastcampus',
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+      maxAge: 2000 * 60 * 60 // 지속시간 2시간
     },
     store: new SequelizeStore({
-        db : db.sequelize
+        db: db.sequelize
     }),
 });
 app.use(sessionMiddleWare);

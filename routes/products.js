@@ -5,7 +5,7 @@ const loginRequired = require('../helpers/loginRequired');
 const paginate = require('express-paginate');
 
 const csrf = require('csurf');
-const csrfProtection = csrf({ cookie : true });
+const csrfProtection = csrf({ cookie: true });
 
 ///////////////////////////////////////////////////////////////
 // multer
@@ -19,14 +19,14 @@ const fs = require('fs');
 //multer 셋팅
 const multer = require('multer');
 const storage = multer.diskStorage({
-    destination : (req, file, callback) => {    //이미지가 저장되는 도착지 지정
+    destination: (req, file, callback) => {    //이미지가 저장되는 도착지 지정
         callback(null, uploadDir );
     },
-    filename : (req, file, callback) => {       // products-날짜.jpg(png) 저장 
+    filename: (req, file, callback) => {       // products-날짜.jpg(png) 저장 
         callback(null, `products-${Date.now()}.${file.mimetype.split('/')[1]}`);
     }
 });
-const upload = multer({ storage : storage });
+const upload = multer({ storage: storage });
 
 ///////////////////////////////////////////////////////////////
 // products main
@@ -35,15 +35,15 @@ router.get('/' , paginate.middleware(5, 50), async(req, res) => {
     try {
         const [products, totalCount] = await Promise.all([
             models.Products.findAll({
-                User : [
+                include: [
                     {
-                        model : models.User,
-                        as : 'Owner',
-                        attributes : ['username', 'displayname']
+                        model: models.User,
+                        as: 'Owner',
+                        attributes: ['username', 'displayname']
                     },
                 ],
-                limit : req.query.limit,
-                offset : req.offset
+                limit: req.query.limit,
+                offset: req.offset
             }),
 
             models.Products.count()
@@ -63,20 +63,20 @@ router.get('/' , paginate.middleware(5, 50), async(req, res) => {
 // write
 ///////////////////////////////////////////////////////////////
 router.get('/write', loginRequired, csrfProtection, (req, res) => {
-    res.render('admin/products/form.html', { csrfToken : req.csrfToken() });
+    res.render('admin/products/form.html', { csrfToken: req.csrfToken() });
 });
 
 router.post('/write', loginRequired, upload.single('thumbnail'), csrfProtection, async(req, res) => {  // thumbnail은 input필드의 name
 
     // key - body 간 필드명이 동일하면 req.body만 넣어줘도 자동으로 맵핑된다.
-    // 즉 { name : req.body.name, ... } 생략 가능
+    // 즉 { name: req.body.name, ... } 생략 가능
     try {
-        req.body.thumbnail = req.file ? req.file.filename : "";
+        req.body.thumbnail = req.file ? req.file.filename: "";
 
         // 유저를 가져온다음에 저장
         const user = await models.User.findByPk(req.user.id);
         await user.createProduct(req.body);
-
+        
         res.redirect('/admin/products');
         
     } catch(e) {
@@ -90,14 +90,14 @@ router.post('/write', loginRequired, upload.single('thumbnail'), csrfProtection,
 router.get('/detail/:id' , async(req, res) => {
     try {
         const data_from_db = await models.Products.findOne({
-            where : {
-                id : req.params.id
+            where: {
+                id: req.params.id
             },
-            include : [
+            include: [
                 'Memo'
             ]
         });
-        res.render('admin/products/detail.html', { product : data_from_db });
+        res.render('admin/products/detail.html', { product: data_from_db });
     } catch(e) {
 
     }
@@ -121,8 +121,8 @@ router.get('/edit/:id', loginRequired, csrfProtection, async(req, res) => {
     try {
         const data_from_db = await models.Products.findByPk(req.params.id);
         res.render('admin/products/form.html', {
-            product : data_from_db,
-            csrfToken : req.csrfToken()
+            product: data_from_db,
+            csrfToken: req.csrfToken()
          });
     } catch(e) {
 
@@ -139,11 +139,11 @@ router.post('/edit/:id', loginRequired, upload.single('thumbnail'), csrfProtecti
         }
 
         // 수정요청이 파일명을 들고있으면 덮어씌우고, 안들고있으면 DB에서 가져옴
-        req.body.thumbnail = req.file ? req.file.filename : product.thumbnail;
+        req.body.thumbnail = req.file ? req.file.filename: product.thumbnail;
 
         await models.Products.update(req.body, {
-            where : {
-                id : req.params.id
+            where: {
+                id: req.params.id
             }
         });
 
@@ -165,8 +165,8 @@ router.get('/delete/:id', async(req, res) => {
             fs.unlinkSync(`${uploadDir}/${product.thumbnail}`);
 
         await models.Products.destroy({
-            where : { 
-                id : req.params.id
+            where: { 
+                id: req.params.id
             }
         });
         res.redirect('/admin/products');
@@ -178,8 +178,8 @@ router.get('/delete/:id', async(req, res) => {
 router.get('/delete/:product_id/:memo_id', async(req, res) => {
     try {
         await models.ProductsMemo.destroy({
-            where : {
-                id : req.params.memo_id
+            where: {
+                id: req.params.memo_id
             }
         });
         res.redirect(`/admin/products/detail/${req.params.product_id}`);

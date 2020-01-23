@@ -9,20 +9,20 @@ const models = require('../models');
 const dotenv = require('dotenv');
 dotenv.config();
 
-passport.serializeUser( (user, done) => {
+passport.serializeUser((user, done) => {
     done(null, user);
 });
 
-passport.deserializeUser( (user, done) => {
+passport.deserializeUser((user, done) => {
     done(null, user);
 });
 
 passport.use(new FacebookStrategy({
         // https://developers.facebook.com에서 appId 및 scretID 발급
-        clientID : process.env.FACEBOOK_APPID , // 입력하세요
-        clientSecret : process.env.FACEBOOK_SECRETCODE , // 입력하세요.
-        callbackURL : `${process.env.SITE_DOMAIN}/auth/facebook/callback`,
-        profileFields : ['id', 'displayName', 'photos', 'email'] // 받고 싶은 필드 나열
+        clientID: process.env.FACEBOOK_APPID , // 입력하세요
+        clientSecret: process.env.FACEBOOK_SECRETCODE , // 입력하세요.
+        callbackURL: `${process.env.SITE_DOMAIN}/auth/facebook/callback`,
+        profileFields: ['id', 'displayName', 'photos', 'email'] // 받고 싶은 필드 나열
     }, async(accessToken, refreshToken, profile, done) => {
         
         console.log('페이스북 로그인 사용자 정보');
@@ -40,32 +40,8 @@ passport.use(new FacebookStrategy({
         try {
             const username =`fb_${profile.id}`;
 
-            // // db에 아이디 존재하는지 확인
-            // const existUserCount = await models.User.count({
-            //     where : {
-            //         // 아이디로 조회
-            //         username
-            //     }
-            // });
-
-            // if (!existUserCount) {
-            //     user = await models.User.create({
-            //         username,
-            //         displayname : profile.displayName,
-            //         password : "facebook"
-            //     });
-            // } else {
-            //     user = await models.User.findOne({
-            //         where : { 
-            //             username
-            //         } 
-            //     });
-            // }
-
-            // return done(null, user);
-
             var storedUser = await models.User.findOne({
-                where : {
+                where: {
                     username
                 }
             });
@@ -73,8 +49,8 @@ passport.use(new FacebookStrategy({
             if (storedUser === null) {
                 storedUser = await models.User.create({
                     username,
-                    displayname : profile.displayName,
-                    password : "facebook"
+                    displayname: profile.displayName,
+                    password: "facebook"
                 });
             }
 
