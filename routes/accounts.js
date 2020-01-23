@@ -8,7 +8,7 @@ const passwordHash = require('../helpers/passwordHash');
 
 passport.serializeUser((user, done) => {
     console.log('serializeUser');
-    done(null, user);
+    done(null, user); 
 });
 
 passport.deserializeUser((user, done) => {
@@ -22,8 +22,7 @@ passport.use(new LocalStrategy({
     usernameField: 'username',
     passwordField : 'password',
     passReqToCallback : true
-},
-async (req , username , password, done) => {
+}, async(req, username, password, done) => {
 
     // 조회
     const user = await models.User.findOne({
@@ -37,7 +36,7 @@ async (req , username , password, done) => {
 
     // 유저에서 조회되지 않을시
     if (!user) {
-        return done(null, false, { message: '일치하는 아이디 패스워드가 존재하지 않습니다.' });
+        return done(null, false, { message : '일치하는 아이디 패스워드가 존재하지 않습니다.' });
 
     // 유저에서 조회 되면 세션등록쪽으로 데이터를 넘김
     } else {
@@ -69,9 +68,8 @@ router.get('/login', (req, res) => {
 router.post('/login', 
     passport.authenticate('local', { 
         failureRedirect: '/accounts/login', 
-        failureFlash: true 
-    }), 
-    ( _ , res) => {
+        failureFlash: true
+    }), (req, res) => {
         res.send('<script>alert("로그인 성공");location.href="/";</script>');
     }
 );

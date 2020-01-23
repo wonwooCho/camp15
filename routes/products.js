@@ -35,7 +35,7 @@ router.get('/' , paginate.middleware(5, 50), async(req, res) => {
     try {
         const [products, totalCount] = await Promise.all([
             models.Products.findAll({
-                include : [
+                User : [
                     {
                         model : models.User,
                         as : 'Owner',
@@ -76,7 +76,7 @@ router.post('/write', loginRequired, upload.single('thumbnail'), csrfProtection,
         // 유저를 가져온다음에 저장
         const user = await models.User.findByPk(req.user.id);
         await user.createProduct(req.body);
-        
+
         res.redirect('/admin/products');
         
     } catch(e) {

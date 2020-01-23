@@ -23,44 +23,62 @@ passport.use(new FacebookStrategy({
         clientSecret : process.env.FACEBOOK_SECRETCODE , // 입력하세요.
         callbackURL : `${process.env.SITE_DOMAIN}/auth/facebook/callback`,
         profileFields : ['id', 'displayName', 'photos', 'email'] // 받고 싶은 필드 나열
-    },
-    async (  accessToken , refreshToken , profile, done) => {
+    }, async(accessToken, refreshToken, profile, done) => {
         
+        console.log('페이스북 로그인 사용자 정보');
         //아래 하나씩 찍어보면서 데이터를 참고해주세요.
-        //console.log(accessToken);
+        // console.log(accessToken);
+        // console.log(refreshToken);
         console.log(profile);
         //console.log(profile.displayName);
         //console.log(profile.emails[0].value);
         //console.log(profile._raw);
         //console.log(profile._json);
         
+        // 페이스북 인증 실패의 경우 무조건 fail로 보내고 있으므로
+        // 여기 들어온건 무조건 인증엔 성공했다고 가정한다.
         try {
             const username =`fb_${profile.id}`;
 
-            // 존재하는지 체크
-            const exist = await models.User.count({
+            // // db에 아이디 존재하는지 확인
+            // const existUserCount = await models.User.count({
+            //     where : {
+            //         // 아이디로 조회
+            //         username
+            //     }
+            // });
+
+            // if (!existUserCount) {
+            //     user = await models.User.create({
+            //         username,
+            //         displayname : profile.displayName,
+            //         password : "facebook"
+            //     });
+            // } else {
+            //     user = await models.User.findOne({
+            //         where : { 
+            //             username
+            //         } 
+            //     });
+            // }
+
+            // return done(null, user);
+
+            var storedUser = await models.User.findOne({
                 where : {
-                    // 아이디로 조회를 해봅니다.
                     username
                 }
             });
 
-            if (!exist) {
-                // 존재하면 바로 세션에 등록
-                user = await models.User.create({
-                    username ,
-                    displayname : profile.displayName ,
+            if (storedUser === null) {
+                storedUser = await models.User.create({
+                    username,
+                    displayname : profile.displayName,
                     password : "facebook"
-                });
-            } else {
-                user = await models.User.findOne({
-                    where : { 
-                        username
-                    } 
                 });
             }
 
-            return done(null, user );
+            return done(null, storedUser);
 
         } catch(e) {
             console.log(e);

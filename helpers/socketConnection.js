@@ -34,7 +34,6 @@ module.exports =  (io) => {
 
 /*
 디비에 저장된 Sessions -> data 내용
-
 {
     "cookie":{
         "originalMaxAge":7200000,
