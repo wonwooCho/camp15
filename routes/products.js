@@ -71,7 +71,7 @@ router.post('/write', loginRequired, upload.single('thumbnail'), csrfProtection,
     // key - body 간 필드명이 동일하면 req.body만 넣어줘도 자동으로 맵핑된다.
     // 즉 { name: req.body.name, ... } 생략 가능
     try {
-        req.body.thumbnail = req.file ? req.file.filename: "";
+        req.body.thumbnail = req.file ? req.file.filename : "";
 
         // 유저를 가져온다음에 저장
         const user = await models.User.findByPk(req.user.id);
@@ -139,7 +139,7 @@ router.post('/edit/:id', loginRequired, upload.single('thumbnail'), csrfProtecti
         }
 
         // 수정요청이 파일명을 들고있으면 덮어씌우고, 안들고있으면 DB에서 가져옴
-        req.body.thumbnail = req.file ? req.file.filename: product.thumbnail;
+        req.body.thumbnail = req.file ? req.file.filename : product.thumbnail;
 
         await models.Products.update(req.body, {
             where: {

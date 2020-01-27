@@ -1,0 +1,54 @@
+{% set title = "내 정보" %}
+{% extends "layout/base.html" %}
+ 
+{% block content -%}
+    <form action="" id="edit_from" method="post">
+        <table class="table table-bordered">
+            <tr>
+                <th>아이디</th>
+                <td>{{ userInfo.username }}</td>
+            </tr>
+
+            {% if isLocalUser -%}
+                <tr>
+                    <th>새 비밀번호</th>
+                    <td><input type="password" placeholder="Password" name="password" class="form-control" value=""/></td>
+                </tr>
+
+                <tr>
+                    <th>새 비밀번호 확인</th>
+                    <td><input type="password" placeholder="Password 확인" name="password2" class="form-control" value=""/></td>
+                </tr>
+            {% endif %}
+            
+            <tr>
+                <th>새 닉네임</th>
+                <td><input type="text" placeholder="닉네임" name="displayname" class="form-control" value="{{ userInfo.displayname }}"/></td>
+
+            </tr>                
+        </table>
+        <button class="btn btn-primary">내 정보 수정</button>
+    </form>
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#edit_from').submit(function(){
+        
+                var $passwordInput = $('#edit_from input[name=password]');
+                var $passwordInput2 = $('#edit_from input[name=password2]');
+        
+                if($passwordInput.val().length < 4){
+                    alert("4글자 이상 작성해주세요");
+                    return false;
+                }
+                
+                if($passwordInput.val() !== $passwordInput2.val()){
+                    alert("패스워드와 확인용패스워드를 똑같이 입력해주세요.");
+                    return false;
+                }
+        
+                return true;
+            });
+        });
+        </script>
+{% endblock %}

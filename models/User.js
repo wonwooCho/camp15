@@ -5,7 +5,7 @@ module.exports = (sequelize, DataTypes) => {
         id: {
             type: DataTypes.BIGINT.UNSIGNED,
             primaryKey: true,
-            autoIncrement: true
+            autoIncrement: true,
         },
 
         username: {
@@ -26,12 +26,16 @@ module.exports = (sequelize, DataTypes) => {
         
         displayname: {
             type: DataTypes.STRING
-        }
+        },
 
-        }, {
-            tableName: 'User'
-        }
-    );
+        provider: {
+            type: DataTypes.STRING,
+            allowNull: false
+        },
+
+    }, {
+        tableName: 'User'
+    });
 
     User.associate = models => {
         User.hasMany(

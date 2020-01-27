@@ -35,6 +35,7 @@ const accounts = require('./routes/accounts');
 const auth = require('./routes/auth');
 const home = require('./routes/home');
 const chat = require('./routes/chat');
+const mypage = require('./routes/mypage');
 
 const app = express();
 const port = 3000;
@@ -76,8 +77,8 @@ app.use(passport.session());
 // 플래시 메시지 관련
 app.use(flash());
 
-//.......flash 아래에다 붙여 넣는다.
-//로그인 정보 뷰에서만 변수로 셋팅, 전체 미들웨어는 router위에 두어야 에러가 안난다
+// .......flash 아래에다 붙여 넣는다.
+// 로그인 정보 뷰에서만 변수로 셋팅, 전체 미들웨어는 router위에 두어야 에러가 안난다
 // 템플릿에서만 사용할 글로벌변수 -> app.locals
 app.use((req, res, next) => {
     app.locals.isLogin = req.isAuthenticated();
@@ -90,6 +91,7 @@ app.use('/admin', admin);
 app.use('/accounts', accounts);
 app.use('/auth', auth);
 app.use('/chat', chat);
+app.use('/mypage', mypage);
 app.use('/', home);
 
 const server = app.listen(port, () => {

@@ -24,6 +24,7 @@ passport.use(new NaverStrategy({
     svcType: 0  // optional. see http://gamedev.naver.com/index.php/%EC%98%A8%EB%9D%BC%EC%9D%B8%EA%B2%8C%EC%9E%84:OAuth_2.0_API
 }, async(accessToken, refreshToken, profile, done) => {
     console.log("네이버 로그인 사용자 정보");
+    console.log(profile);
 
     try {
         const username = `naver_${profile.id}`;
@@ -37,7 +38,8 @@ passport.use(new NaverStrategy({
             storedUser = await models.User.create({
                 username,
                 displayname: profile.displayName,
-                password: 'naver_static_pw'
+                provider: profile.provider,
+                password: 'naver_static_pw',
             });
         }
 

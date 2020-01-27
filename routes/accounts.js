@@ -84,6 +84,7 @@ router.post('/join', async(req, res) => {
             return;
         }
 
+        req.body.provider = 'camp15';
         await models.User.create(req.body);
         res.send('<script>alert("회원가입 성공");\location.href="/accounts/login";</script>');
         
