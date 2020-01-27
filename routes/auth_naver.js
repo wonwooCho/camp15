@@ -42,7 +42,7 @@ passport.use(new NaverStrategy({
             });
         }
 
-        return done(null, profile);
+        return done(null, storedUser);
 
     } catch(e) {
         console.log(e);
