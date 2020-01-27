@@ -28,7 +28,7 @@ passport.use(new FacebookStrategy({
         console.log('페이스북 로그인 사용자 정보');
         // console.log(accessToken);
         // console.log(refreshToken);
-        console.log(profile);
+        // console.log(profile);
         //console.log(profile.displayName);
         //console.log(profile.emails[0].value);
         //console.log(profile._raw);
@@ -51,8 +51,8 @@ passport.use(new FacebookStrategy({
                     password: 'facebook'
                 });
             }
-
-            return done(null, storedUser);
+            
+            return done(null, storedUser.dataValues);
 
         } catch(e) {
             console.log(e);

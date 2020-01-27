@@ -24,6 +24,8 @@ passport.use(new LocalStrategy({
     passReqToCallback: true
 }, async(req, username, password, done) => {
 
+    console.log('LOCAL PASSPORT');
+
     // 조회
     const user = await models.User.findOne({
         where: {
@@ -40,7 +42,7 @@ passport.use(new LocalStrategy({
 
     // 유저에서 조회 되면 세션등록쪽으로 데이터를 넘김
     } else {
-        return done(null, user.dataValues );
+        return done(null, user.dataValues);
     }
 }));
 
@@ -54,8 +56,37 @@ router.get('/join', (_, res) => {
 
 router.post('/join', async(req, res) => {
     try {
+        const duplicatedUsername = await models.User.findOne({
+            where: {
+                username: req.body.username
+            }
+        });
+
+        if (duplicatedUsername !== null) {
+            res.render('accounts/join.html', {
+                flashMessage: '중복된 아이디입니다.',
+                informed: req.body
+            });
+            return;
+        }
+
+        const duplicatedDisplayname = await models.User.findOne({
+            where: {
+                displayname: req.body.displayname
+            }
+        });
+
+        if (duplicatedDisplayname !== null) {
+            res.render('accounts/join.html', {
+                flashMessage: '중복된 닉네임입니다.',
+                informed: req.body
+            });
+            return;
+        }
+
         await models.User.create(req.body);
         res.send('<script>alert("회원가입 성공");\location.href="/accounts/login";</script>');
+        
     } catch(e) {
 
     }

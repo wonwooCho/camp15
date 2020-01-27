@@ -4,6 +4,11 @@
 {% block content -%}
 <div class="row">
     <div class="col-md-4 col-md-offset-4">
+
+        {% if flashMessage %}
+            <div class="alert alert-danger" role="alert">{{ flashMessage }}</div>
+        {% endif %}
+
         <div class="login-panel panel panel-default">
             <div class="panel-heading">
                 <h3 class="panel-title">회원가입</h3>
@@ -12,16 +17,16 @@
                 <form role="form" action="" id="join_form" method="post">
                     <fieldset>
                         <div class="form-group">
-                            <input class="form-control" placeholder="ID" name="username" type="text" autofocus="" required>
+                            <input class="form-control" placeholder="ID" name="username" type="text" autofocus="" value="{{ informed.username }}" required>
                         </div>
                         <div class="form-group">
-                            <input class="form-control" placeholder="Password" name="password" type="password" value="" required>
+                            <input class="form-control" placeholder="Password" name="password" type="password" value="{{ informed.password }}" required>
                         </div>
                         <div class="form-group">
-                            <input class="form-control" placeholder="Password 확인" name="password2" type="password" value="" required>
+                            <input class="form-control" placeholder="Password 확인" name="password2" type="password" value="{{ informed.password2 }}" required>
                         </div>
                         <div class="form-group">
-                            <input class="form-control" placeholder="이름" name="displayname" type="text" value="" required>
+                            <input class="form-control" placeholder="닉네임" name="displayname" type="text" value="{{ informed.displayname }}" required>
                         </div>
                         <!-- Change this to a button or input when using this as a form -->
                         <input type="submit" class="btn btn-lg btn-success btn-block" value="가입하기">
