@@ -32,16 +32,24 @@ router.post('/edit', async(req, res) => {
                 }
             });
 
-            req.logout();
-            res.redirect('/');
+            var updateddUser = await models.User.findOne({
+                where: {
+                    id: req.user.id
+                }
+            });
 
-            // req.login(user, (err) => {
-            //     if (err) {
-            //         console.log(err);
-            //         return res.send('<script>alert("ERROR");\location.href="/";</script>');
-            //     }
-            //     return res.send('<script>alert("성공적으로 수정되었습니다.");\location.href="/";</script>');
-            // });
+            // console.log('updateddUser: ');
+            // console.log(updateddUser);
+            // console.log('req.user: ');
+            // console.log(req.user);
+            
+            req.login(updateddUser.dataValues, (err) => {
+                if (err) {
+                    console.log(err);
+                    return res.send('<script>alert("ERROR");\location.href="/";</script>');
+                }
+                return res.send('<script>alert("성공적으로 수정되었습니다.");\location.href="/";</script>');
+            });
             
         } else {
             res.send('<script>alert("ERROR - 유효하지 않은 계정입니다.");\location.href="/";</script>');
