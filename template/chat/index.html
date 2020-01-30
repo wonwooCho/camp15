@@ -49,34 +49,41 @@
     </style>
     <script src="/socket.io/socket.io.js"></script>  
     <script>
-    var socket = io();
 
-    function updateUserList(userList) {
-        $('#userList').html("");
-        for(var key in userList){
-            $('#userList').append(`<li>${userList[key]}</li>`);
+        // io parameter로 소켓이 연결될 url입력(채팅서버를 따로 구현하는 경우). 없으면 localhost
+        var socket = io();
+
+        function updateUserList(userList) {
+            $('#userList').html("");
+            for(var key in userList){
+                $('#userList').append(`<li>${userList[key]}</li>`);
+            }
         }
-    }
 
-    socket.on('join', data => {
-        updateUserList(data);
-    });
-
-    socket.on('leave', data => {
-        updateUserList(data);
-    });
-
-    socket.on('server message', data => {
-        $('#chatBody').append(`<li><strong>${data.displayname}</strong> ${data.message}</li>`);
-    });
-
-    $(document).ready(() => {
-        $('#sendForm').submit(() => {
-            var msg = $('#sendForm input[name=message]');
-            socket.emit('client message', { message: msg.val()});
-            msg.val('');
-            return false;
+        socket.on('join', data => {
+            updateUserList(data);
         });
-    });
+
+        socket.on('leave', data => {
+            updateUserList(data);
+        });
+
+        socket.on('server message', data => {
+            $('#chatBody').append(`<li><strong>${data.displayname}</strong> ${data.message}</li>`);
+        });
+
+        $(document).ready(() => {
+            $('#sendForm').submit(() => {
+                var msg = $('#sendForm input[name=message]');
+
+                if (msg.val().length < 1) {
+                    return false;
+                }
+
+                socket.emit('client message', { message: msg.val()});
+                msg.val('');
+                return false;
+            });
+        });
     </script>
 {% endblock %}

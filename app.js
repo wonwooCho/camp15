@@ -101,6 +101,7 @@ const server = app.listen(port, () => {
 const listen = require('socket.io');
 const io = listen(server);
 
+// socket io passport에 접근하기 위한 미들웨어
 io.use((socket, next) => {
     sessionMiddleWare(socket.request, socket.request.res, next);
 });

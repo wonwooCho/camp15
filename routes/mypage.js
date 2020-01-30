@@ -42,6 +42,8 @@ router.post('/edit', async(req, res) => {
             // console.log(updateddUser);
             // console.log('req.user: ');
             // console.log(req.user);
+            // console.log('req: ');
+            // console.log(req);
             
             req.login(updateddUser.dataValues, (err) => {
                 if (err) {

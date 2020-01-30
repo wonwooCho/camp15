@@ -31,7 +31,8 @@ const upload = multer({ storage: storage });
 ///////////////////////////////////////////////////////////////
 // products main
 ///////////////////////////////////////////////////////////////
-router.get('/' , paginate.middleware(5, 50), async(req, res) => {
+// (n, m) -> 한 페이지에 노출되는 아이템 개수, m -> 최대 가져오는 전체 아이템 개수
+router.get('/' , paginate.middleware(5, 1000), async(req, res) => {
     try {
         const [products, totalCount] = await Promise.all([
             models.Products.findAll({
@@ -49,8 +50,10 @@ router.get('/' , paginate.middleware(5, 50), async(req, res) => {
             models.Products.count()
         ]);
 
-        // const pageCount = Math.ceil(totalCount / req.query.limit);
-        const pageCount = (totalCount / req.query.limit) + (totalCount % req.query.limit);
+        const pageCount = Math.ceil(totalCount / req.query.limit);
+        // const pageCount = (totalCount / req.query.limit) + (totalCount % req.query.limit);
+
+        // 1번 파람: page 네비게이션 바에 노출되는 최대 page 수
         const pages = paginate.getArrayPages(req)(5, pageCount, req.query.page);
 
         res.render('admin/products/products.html', { products, pages, pageCount });
@@ -186,6 +189,10 @@ router.get('/delete/:product_id/:memo_id', async(req, res) => {
     } catch(e) {
 
     }
+});
+
+router.post('/ajax_symmernote/', loginRequired, upload.single('thumbnail'), (req, res) => {
+    res.send(`/uploads/${req.file.filename}`);
 });
 
 module.exports = router;
