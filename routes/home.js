@@ -13,7 +13,7 @@ router.get('/', async (req, res) => {
     });
 
     // console.log(models.Products.findAll());
-    res.render('layout/home.html', { products });
+    res.render('home.html', { products });
 });
 
 module.exports = router;
