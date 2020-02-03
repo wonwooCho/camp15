@@ -105,7 +105,7 @@ class App {
     }
 
     setLocals() {
-        this.app.use( (req, _, next) => {
+        this.app.use((req, _, next) => {
             this.app.locals.isLogin = req.isAuthenticated();
             this.app.locals.req_path = req.path;
             next();

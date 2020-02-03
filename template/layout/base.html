@@ -33,17 +33,16 @@
                 </div> 
                 <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-9">
                     <ul class="nav navbar-nav">
-                        <li class="active">
-                            <a href="/">Home</a>
-                        </li>
-                        <li><a href="/admin/products">ADMIN</a></li>
-                        <li><a href="/chat">CHAT</a></li>
+                        {% from "macro/link.html" import link %}
+                        {{ link('/', "Home" , req_path ) }}
+                        {{ link('/admin/products', "ADMIN" , req_path ) }}
+                        {{ link('/chat' , "CHAT", req_path ) }}
                         {% if isLogin %}
                             <li><a href="/accounts/logout" onclick="return confirm('로그아웃 하시겠습니까?')">LOGOUT</a></li>
-                            <li><a href="/mypage/edit">MY PAGE</a></li>
+                            {{ link('/mypage/edit', "MY PAGE", req_path) }}
                         {% else %}
-                            <li><a href="/accounts/join">JOIN</a></li> 
-                            <li><a href="/accounts/login">LOGIN</a></li>  
+                            {{ link('/accounts/join', "JOIN", req_path ) }}
+                            {{ link('/accounts/login', "LOGIN", req_path ) }}
                         {% endif %}
                     </ul> 
                 </div> 
