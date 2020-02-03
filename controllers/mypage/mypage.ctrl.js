@@ -1,10 +1,11 @@
-const express = require('express');
-const router = express.Router();
+const models = require('../../models');
+const passwordHash = require('../../helpers/passwordHash');
 
-const models = require('../models');
-const passwordHash = require('../helpers/passwordHash');
+exports.index = (req, res) => {
+    res.redirect('/mypage/edit');
+}
 
-router.get('/edit', (req, res) => {
+exports.get_edit = (req, res) => {
     const userInfo = req.user;
     const isLocalUser = userInfo.provider === 'camp15';
 
@@ -12,9 +13,9 @@ router.get('/edit', (req, res) => {
         userInfo: req.user,
         isLocalUser: isLocalUser
     });
-});
+}
 
-router.post('/edit', async(req, res) => {
+exports.post_edit = async(req, res) => {
     try {
         var storedUser = await models.User.findOne({
             where: {
@@ -60,6 +61,4 @@ router.post('/edit', async(req, res) => {
     } catch(e) {
         console.log(`mypage/edit error - ${e}`);
     }
-});
-
-module.exports = router;
+}

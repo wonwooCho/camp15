@@ -4,106 +4,117 @@ const logger = require('morgan');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 
-// flash  메시지 관련
+//flash  메시지 관련
 const flash = require('connect-flash');
  
-// passport 로그인 관련
+//passport 로그인 관련
 const passport = require('passport');
 const session = require('express-session');
 
 // db 관련
 const db = require('./models');
 
-// DB authentication
-db.sequelize.authenticate()
-.then(() => {
-    console.log('Connection has been established successfully.');
+class App {
+    constructor () {
+        this.app = express();
+        
+        // db 접속
+        this.dbConnection();
 
-    // 접속과 동시에 테이블 자동생성 시도
-    return db.sequelize.sync();
-    // return db.sequelize.drop();
-})
-.then(() => {
-    console.log('DB Sync complete.');
-})
-.catch(err => {
-    console.error('Unable to connect to the database:', err);
-});
+        // 뷰엔진 셋팅
+        this.setViewEngine();
 
-const admin = require('./routes/admin');
-const accounts = require('./routes/accounts');
-const auth = require('./routes/auth');
-const home = require('./routes/home');
-const chat = require('./routes/chat');
-const mypage = require('./routes/mypage');
+        // 세션 셋팅
+        this.setSession();
 
-const app = express();
-const port = 3000;
+        // 미들웨어 셋팅
+        this.setMiddleWare();
 
-nunjucks.configure('template', {
-    autoescape: true,
-    express: app
-});
+        // 정적 디렉토리 추가
+        this.setStatic();
 
-// 미들웨어
-app.use(logger('dev'));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cookieParser());
+        // 로컬 변수
+        this.setLocals();
 
-// 업로드 정적 path 추가
-app.use('/uploads', express.static('uploads'));
+        // 라우팅
+        this.getRouting();
+    }
 
-const SequelizeStore = require('connect-session-sequelize')(session.Store);
+    dbConnection() {
+        // DB authentication
+        db.sequelize.authenticate()
+        .then(() => {
+            console.log('Connection has been established successfully.');
+            return db.sequelize.sync();
+            // return db.sequelize.drop();
+        })
+        .then(() => {
+            console.log('DB Sync complete.');
+            // 더미 데이터가 필요하면 아래 설정
+            //  require('./config/insertDummyData')();
+        })
+        .catch(err => {
+            console.error('Unable to connect to the database:', err);
+        });
+    }
 
-//session 관련 셋팅
-const sessionMiddleWare = session({
-    secret: 'fastcampus',
-    resave: false,
-    saveUninitialized: true,
-    cookie: {
-      maxAge: 2000 * 60 * 60 // 지속시간 2시간
-    },
-    store: new SequelizeStore({
-        db: db.sequelize
-    }),
-});
-app.use(sessionMiddleWare);
 
-// passport 적용
-app.use(passport.initialize());
-app.use(passport.session());
+    setMiddleWare() {
+        this.app.use(logger('dev'));
+        this.app.use(bodyParser.json());
+        this.app.use(bodyParser.urlencoded({ extended: false }));
+        this.app.use(cookieParser());
 
-// 플래시 메시지 관련
-app.use(flash());
+        //passport 적용
+        this.app.use(passport.initialize());
+        this.app.use(passport.session());
 
-// .......flash 아래에다 붙여 넣는다.
-// 로그인 정보 뷰에서만 변수로 셋팅, 전체 미들웨어는 router위에 두어야 에러가 안난다
-// 템플릿에서만 사용할 글로벌변수 -> app.locals
-app.use((req, res, next) => {
-    app.locals.isLogin = req.isAuthenticated();
-    // app.locals.URL_PARAMETER = req.url; // 현재 url 정보를 보내고 싶으면 이와같이 셋팅
-    // app.locals.USER_DATA = req.user; // 사용 정보를 보내고 싶으면 이와같이 셋팅
-    next();
-});
+        //플래시 메시지 관련
+        this.app.use(flash());
+    }
 
-app.use('/admin', admin);
-app.use('/accounts', accounts);
-app.use('/auth', auth);
-app.use('/chat', chat);
-app.use('/mypage', mypage);
-app.use('/', home);
+    setViewEngine() {
+        nunjucks.configure('template', {
+            autoescape: true,
+            express: this.app
+        });
+    }
 
-const server = app.listen(port, () => {
-    console.log('Express listening on port', port);
-});
 
-const listen = require('socket.io');
-const io = listen(server);
+    setSession() {
+        const SequelizeStore = require('connect-session-sequelize')(session.Store);
+        
+        this.app.sessionMiddleWare = session({
+            secret: 'fastcampus',
+            resave: false,
+            saveUninitialized: true,
+            cookie: {
+            maxAge: 2000 * 60 * 60 //지속시간 2시간
+            },
+            store: new SequelizeStore({
+                db: db.sequelize,
+            }),
+        });
+        this.app.use(this.app.sessionMiddleWare);
+    }
 
-// socket io passport에 접근하기 위한 미들웨어
-io.use((socket, next) => {
-    sessionMiddleWare(socket.request, socket.request.res, next);
-});
 
-require('./helpers/socketConnection')(io);  // 별도 모듈 변수선언 없이 불러옴과 동시에 io 파라미터 전달
+    setStatic() {
+        this.app.use('/uploads', express.static('uploads'));
+        this.app.use('/static', express.static('static'));
+    }
+
+    setLocals() {
+        this.app.use( (req, _, next) => {
+            this.app.locals.isLogin = req.isAuthenticated();
+            this.app.locals.req_path = req.path;
+            next();
+        });
+    }
+
+    getRouting() {
+        this.app.use(require('./controllers'))
+    }
+}
+
+module.exports = new App().app;
