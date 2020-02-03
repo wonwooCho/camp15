@@ -15,7 +15,10 @@ exports.get_products = async(req,res) => {
                     },
                 ],
                 limit: req.query.limit,
-                offset: req.offset
+                offset: req.offset,
+                order: [
+                    ['createdAt', 'desc']
+                ]
             }),
 
             models.Products.count()
