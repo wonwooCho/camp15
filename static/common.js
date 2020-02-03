@@ -14,7 +14,7 @@ function getCookie(cname){
     return "";
 }
 
-function setCookieHour( name, value, hours ){   
+function setCookieHour(name, value, hours) {   
     var now = new Date();
 	var time = now.getTime();
 	time += 3600 * 1000 * hours;

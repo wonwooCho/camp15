@@ -7,5 +7,6 @@ router.use('/admin', require('./admin'));
 router.use('/auth', require('./auth'));
 router.use('/chat', require('./chat'));
 router.use('/mypage', require('./mypage'));
+router.use('/products', require('./products'));
 
 module.exports = router;
