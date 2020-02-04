@@ -23,4 +23,6 @@ router.get('/products/delete/:id', ctrl.get_delete);
 router.get('/products/delete/:product_id/:memo_id', ctrl.delete_memo);
 router.post('/products/ajax_summernote', loginRequired, upload.single('thumbnail'), ctrl.ajax_summernote);
 
+router.get('/order', ctrl.get_order );
+
 module.exports = router;

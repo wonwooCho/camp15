@@ -154,3 +154,12 @@ exports.delete_memo = async(req, res) => {
 exports.ajax_summernote = (req,res) => {
     res.send(`/uploads/${req.file.filename}`);
 }
+
+exports.get_order = async(req, res) => {
+    try {
+        const checkouts = await models.Checkout.findAll();
+        res.render('admin/order.html', { checkouts });
+    } catch(e) {
+
+    }
+}
