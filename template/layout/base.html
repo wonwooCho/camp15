@@ -37,7 +37,8 @@
                         {% from "macro/link.html" import link %}
                         {{ link('/', "Home" , req_path ) }}
                         {{ link('/admin/products', "ADMIN" , req_path ) }}
-                        {{ link('/chat' , "CHAT", req_path ) }}
+                        {{ link('/chat', "CHAT", req_path ) }}
+                        {{ link('/cart', 'CART', req_path) }}
                         {% if isLogin %}
                             <li><a href="/accounts/logout" onclick="return confirm('로그아웃 하시겠습니까?')">LOGOUT</a></li>
                             {{ link('/mypage/edit', "MY PAGE", req_path) }}
