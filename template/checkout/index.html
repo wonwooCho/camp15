@@ -106,10 +106,13 @@
                     buyer_tel : buyer_tel,
                     buyer_addr : buyer_addr,
                     buyer_postcode : buyer_postcode,
-                    m_redirect_url : 'http://localhost:3000/checkout/complete'
+                    m_redirect_url : 'http://ae9a7024.ngrok.io/checkout/complete'  // 모바일에서는 get요청으로 날아가기 때문에 complete get을 만든다.
                 }, function(rsp) {
                     if (rsp.success) {
+
+                        document.location.href = "/checkout/complete?imp_uid=" + rsp.imp_uid;
                         
+                        /* NOTE @wonwoo get요청으로 모델에 결제데이터 쌓기때문에 제거
                         //요청 성공후 ajax POST요청한다.
                         $.ajax({
                             url: '/checkout/complete',
@@ -126,15 +129,16 @@
                                 buyer_addr : buyer_addr,
                                 buyer_postcode : buyer_postcode,
 
-                                status : "결재완료",
+                                status : "결제완료",
                             }
+                            
                         }).done( function(res){
                             alert("결제가 완료되었습니다.");
                             document.location.href = "/checkout/success";
                         }).fail( function(error){
                             console.log(error); 
                         });
-
+                        //*/
                     } else {
                         let msg = '결제에 실패하였습니다.';
                         msg += '에러내용 : ' + rsp.error_msg;
