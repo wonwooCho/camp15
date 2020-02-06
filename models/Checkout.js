@@ -20,7 +20,15 @@ module.exports = (sequelize, DataTypes) => {
             song_jang: { type: DataTypes.STRING }, //송장번호
 
         }, {
-            tableName: 'Checkout'
+            tableName: 'Checkout',
+
+            // db스키마에는 없지만 기능추가하고싶다?
+            getterMethods: {
+                numberFormat() {
+                    // 1000원을 1,000원으로 바꿔준다.
+                    return new Intl.NumberFormat().format(this.paid_amount);
+                }
+            },
         }
     );
 

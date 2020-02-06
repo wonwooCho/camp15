@@ -163,3 +163,12 @@ exports.get_order = async(req, res) => {
 
     }
 }
+
+exports.get_order_edit = async(req, res) => {
+    try {
+        const checkout = await models.Checkout.findByPk(req.params.id);
+        res.render('admin/order_edit.html', { checkout });
+    } catch(e) {
+
+    }
+}
