@@ -16,7 +16,7 @@ module.exports = (sequelize, DataTypes) => {
 
             buyer_postcode: { type: DataTypes.STRING }, //우편번호
 
-            status: { type: DataTypes.STRING }, //결재완료, 배송중 등등
+            status: { type: DataTypes.STRING }, //결제완료, 배송중 등등
             song_jang: { type: DataTypes.STRING }, //송장번호
 
         }, {
