@@ -36,7 +36,11 @@
                     <ul class="nav navbar-nav">
                         {% from "macro/link.html" import link %}
                         {{ link('/', "Home" , req_path ) }}
-                        {{ link('/admin/products', "ADMIN" , req_path ) }}
+
+                        {% if req_user.username == 'admin' %}
+                            {{ link( '/admin/products' , "ADMIN" , req_path ) }}
+                        {% endif %}
+
                         {{ link('/chat', "CHAT", req_path ) }}
                         {{ link('/cart', 'CART', req_path) }}
                         {% if isLogin %}

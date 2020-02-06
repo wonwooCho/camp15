@@ -108,6 +108,7 @@ class App {
         this.app.use((req, _, next) => {
             this.app.locals.isLogin = req.isAuthenticated();
             this.app.locals.req_path = req.path;
+            this.app.locals.req_user = req.user;
             next();
         });
     }
