@@ -1,4 +1,7 @@
 const models = require('../../models');
+const dotenv = require('dotenv');
+
+dotenv.config();
 
 exports.index = (req, res) => {
     
@@ -25,8 +28,8 @@ exports.get_complete = async(req, res) => {
     // 모듈 선언
     const { Iamporter } = require('iamporter');
     const iamporter = new Iamporter({
-        apiKey: '8816467574887883',
-        secret: 'SPsPyn1mcb3FMMcvg1o0QgmUMtrNgGX8vqX4NZq0auFXhSsxURxK7UFTo6HEMFNi6KmTKNUVhATzsm6m'
+        apiKey: process.env.IAMPORT_API_KEY,
+        secret: process.env.IAMPORT_API_SECRET
     });
 
     try{ 

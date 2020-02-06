@@ -9,4 +9,7 @@ FACEBOOK_SECRETCODE = "https://developers.facebook.com에서 추출"
 NAVER_CLIENT_ID = "https://developers.naver.com/에서 추출"
 NAVER_CLIENT_SECRET = "https://developers.naver.com/에서 추출"
 
+IAMPORT_API_KEY = "iamport 관리페이지->시스템설정->api 키"
+IAMPORT_API_SECRET = "iamport 관리페이지->시스템설정->시크릿 키"
+
 SITE_DOMAIN = "나의 웹사이트 주소를 입력 ex) https://localhost:3000"
