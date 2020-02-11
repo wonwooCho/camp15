@@ -105,56 +105,32 @@ exports.get_shipping = async(req, res) => {
 
         var tmpData = {};
         for (var i = 0; i < tdElements.length; ++i) {
-            var cell = i % 4;
-            switch (cell) {
+            var cellData = tdElements[i];
+            var cellI = i % 4;
+
+            switch (cellI) {
                 case 0:
                     tmpData = {};
-                    tmpData['step'] = tdElements[i].children[0].data.trim();
+                    tmpData['step'] = cellData.children[0].data.trim();
                     break;
 
                 case 1:
-                    tmpData['data'] = tdElements[i].children[0].data;
+                    tmpData['date'] = cellData.children[0].data;
                     break;
 
                 case 2:
-                    tmpData['status'] = tdElements[i].children[0].data;
-                    if (1 < tdElements[i].children.length) {
-                        tmpData['status'] += tdElements[i].children[2].data;
+                    tmpData['status'] = cellData.children[0].data;
+                    if (1 < cellData.children.length) {
+                        tmpData['status'] += cellData.children[2].data;
                     }
+                    break;
 
                 case 3:
-                    tmpData['location'] = tdElements[i].children[1].children[0].data;
+                    tmpData['location'] = cellData.children[1].children[0].data;
                     result.push(tmpData);
                     break;
             }
-
-            console.log(tmpData);
-
         }
-
-        // var temp = {}; //임시로 한줄을 담을 변수
-        // for( let i=0 ; i<tdElements.length ; i++ ){
-            
-        //     if(i%4===0){
-        //         temp = {}; //시작 지점이니 초기화
-        //         temp["step"] = tdElements[i].children[0].data.trim(); //공백제거
-        //         //removeEmpty의 경우 step의 경우 공백이 많이 포함됨
-        //     }else if(i%4===1){
-        //         temp["date"] = tdElements[i].children[0].data;
-        //     }else if(i%4===2){
-                
-        //         //여기는 children을 1,2한게 배송상태와 두번째줄의 경우 담당자의 이름 br로 나뉘어져있다.
-        //         // 0번째는 배송상태, 1은 br, 2는 담당자 이름
-        //         temp["status"] = tdElements[i].children[0].data;
-        //         if(tdElements[i].children.length>1){
-        //             temp["status"] += tdElements[i].children[2].data;
-        //         }
-
-        //     }else if(i%4===3){
-        //         temp["location"] = tdElements[i].children[1].children[0].data;
-        //         result.push(temp); //한줄을 다 넣으면 result의 한줄을 푸시한다
-        //     }
-        // }
 
         res.render('checkout/shipping.html', { result });
         
