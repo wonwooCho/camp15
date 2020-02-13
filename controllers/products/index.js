@@ -27,4 +27,19 @@ router.post('/like/:product_id(\\d+)', loginRequired, async(req, res) => {
     }
 });
 
+router.delete('/like/:product_id(\\d+)', loginRequired, async(req, res) => {
+    try {
+        const product = await models.Products.findByPk(req.params.product_id);
+        const user = await models.User.findByPk(req.user.id);
+
+        await user.removeLikes(product);
+
+        res.json( {
+            message: 'success'
+        });
+    } catch(e) {
+        console.log(e);
+    }
+});
+
 module.exports = router;
