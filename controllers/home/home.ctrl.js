@@ -9,6 +9,6 @@ exports.index = async(req, res) => {
             }]
     });
 
-    // console.log(models.Products.findAll());
-    res.render('home.html', { products });
+    const userLikes = await require('../../helpers/userLikes')(req);
+    res.render('home.html', { products, userLikes });
 }
