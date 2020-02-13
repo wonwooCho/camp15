@@ -28,6 +28,17 @@ module.exports = (sequelize, dataTypes) => {
             foreignKey: 'user_id',
             targetKey: 'id'
         });
+
+        Products.belongsToMany(models.User, {
+            through: {
+                model: 'LikesProducts',
+                unique: false
+            },
+            as: 'LikeUser',
+            foreignKey: 'product_id',
+            sourceKey: 'id',
+            constraints: false
+        });
     }
 
     Products.prototype.dateFormat = (date) => (
