@@ -13,3 +13,5 @@ IAMPORT_API_KEY = "iamport 관리페이지->시스템설정->api 키"
 IAMPORT_API_SECRET = "iamport 관리페이지->시스템설정->시크릿 키"
 
 SITE_DOMAIN = "나의 웹사이트 주소를 입력 ex) https://localhost:3000"
+
+SENDGRID_API_KEY = "https://app.sendgrid.com/settings/api_keys 에서 발급"
