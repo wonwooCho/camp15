@@ -5,7 +5,16 @@ const loginRequired = require('../../middleware/loginRequired');
 
 router.get('/:id' , async(req, res) => {
     try {
-        const product = await models.Products.findByPk(req.params.id);
+        const product = await models.Products.findOne({
+            where : { id : req.params.id},
+            include : [ 
+                { model : models.Tag, as : 'Tag' }
+            ],
+            order: [
+                [ 'Tag', 'createdAt', 'desc' ]
+            ]
+        });
+        
         const userLikes = await require('../../helpers/userLikes')(req);
         res.render('products/detail.html', { product, userLikes });  
     } catch(e) {
