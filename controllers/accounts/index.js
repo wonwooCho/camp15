@@ -2,9 +2,11 @@ const { Router } = require('express');
 const router = Router();
 const ctrl = require('./accounts.ctrl');
 const passport = require('../../middleware/passport-local');
+const recaptcha = require('../../middleware/recaptcha');
 
-router.get('/join', ctrl.get_join);
-router.post('/join', ctrl.post_join);
+router.get('/join', recaptcha.middleware.render, ctrl.get_join);
+router.post('/join', recaptcha.middleware.verify, ctrl.post_join);
+
 router.get('/login', ctrl.get_login);
 router.post('/login' , passport.authenticate('local', { 
     failureRedirect: '/accounts/login', 

@@ -1,7 +1,9 @@
 const models = require('../../models');
 
 exports.get_join = (req, res) => {
-    res.render('accounts/join.html');
+    res.render('accounts/join.html',{ 
+        captcha : res.recaptcha
+    });
 }
 
 // exports.post_join = async (req, res) => {
@@ -65,6 +67,12 @@ exports.post_join = async (req, res) => {
     const dotenv = require('dotenv');
     dotenv.config(); // LOAD CONFIG
 
+    if (req.recaptcha.error) {
+        return res.send('<script> \
+                    alert("로봇이 아닙니다를 체크해주세요."); \
+                    history.go(-1); \
+                </script>')
+    }
 
     try {
 
