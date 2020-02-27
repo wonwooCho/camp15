@@ -14,7 +14,7 @@
         <div class="masonry-grid">
             <a href="/products/{{ product.id }}">
                 {% if product.thumbnail %}
-                    <img src="/uploads/{{ product.thumbnail }}">
+                    <img src="{{ product.thumbnail }}">
                 {% endif %}
                 <p>
                     {{ product.name }}<br />

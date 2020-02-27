@@ -18,3 +18,9 @@ SENDGRID_API_KEY = "https://app.sendgrid.com/settings/api_keys 에서 발급"
 
 RECAPCHA_SITE_KEY = "https://www.google.com/recaptcha/admin/ 추출"
 RECAPCHA_SECRET_KEY = "https://www.google.com/recaptcha/admin/ 추출"
+
+AWS_ACCESS_KEY = "https://console.aws.amazon.com/iam/home?nc2=h_m_sc#/security_credentials"
+AWS_SECRET_KEY = "https://console.aws.amazon.com/iam/home?nc2=h_m_sc#/security_credentials"
+
+AWS_REGION = ""
+AWS_BUCKET = "s3버킷이름"

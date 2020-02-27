@@ -6,6 +6,7 @@ const csrfProtection = require('../../middleware/csrf');
 const adminRequired = require('../../middleware/adminRequired');
 
 const upload = require('../../middleware/multer');
+const upload_s3 = require('../../middleware/multer-s3');
 
 // 이렇게하면 이 아래로 모든 url에 adminRequired가 걸린다.
 router.use(adminRequired);
@@ -34,5 +35,7 @@ router.get('/statistics', ctrl.statistics);
 
 router.post('/tag', ctrl.write_tag);
 router.delete('/tag/:product_id/:tag_id', ctrl.delete_tag);
+
+router.post('/upload/:group/:id', upload_s3.single('thumbnail'), csrfProtection, ctrl.s3_upload);
 
 module.exports = router;

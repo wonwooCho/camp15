@@ -38,6 +38,12 @@ class App {
 
         // 라우팅
         this.getRouting();
+
+        // 404 페이지를 찾을수가 없음
+        this.status404();
+
+        // 에러핸들링 (500번대)
+        this.errorHandler();
     }
 
     dbConnection() {
@@ -51,7 +57,7 @@ class App {
         .then(() => {
             console.log('DB Sync complete.');
             // 더미 데이터가 필요하면 아래 설정
-            //  require('./config/insertDummyData')();
+            // require('./config/insertDummyData')();
         })
         .catch(err => {
             console.error('Unable to connect to the database:', err);
@@ -60,7 +66,10 @@ class App {
 
 
     setMiddleWare() {
-        this.app.use(logger('dev'));
+        // 개발모드에서만 logging 한다
+        if( process.env.NODE_ENV !== 'production') {
+            this.app.use(logger('dev'));
+        }
         this.app.use(bodyParser.json());
         this.app.use(bodyParser.urlencoded({ extended: false }));
         this.app.use(cookieParser());
@@ -116,6 +125,20 @@ class App {
 
     getRouting() {
         this.app.use(require('./controllers'))
+    }
+
+    status404() {        
+        this.app.use((req, res, _) => {
+            res.status(404).render('common/404.html')
+        });
+    }
+
+    errorHandler() {
+        if(process.env.NODE_ENV == 'production') {
+            this.app.use( (err, req, res, _) => {
+                res.status(500).render('common/500.html')
+            });
+        }
     }
 }
 
